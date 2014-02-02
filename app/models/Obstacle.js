@@ -15,6 +15,7 @@ define(['./GameObject'], function (GameObjectClass) {
 		_level:            false,
 		_tower:            false,
 		_idx:              false,
+    _isCollapsing:     false,
 
 		init: function (t, def, level) {
 			this._tower = t;
@@ -24,6 +25,25 @@ define(['./GameObject'], function (GameObjectClass) {
 			this._rows = [];
 
 			this._el = this.buildElement(def);
+      t.on('collision', function (object, player) {
+        this._tween.stop();
+        console.log(this._added);
+        if (this._added && !this._isCollapsing) {
+          this._isCollapsing = true;
+          console.log(this._rows);
+          this._rows.forEach(function (items, idx) {
+            if (idx === 0) {
+              THEONE = items[0];
+            }
+            items.forEach(function (el) {
+              if (idx === 0) {
+                //debugger;
+              }
+              el.tween.stop().to({s: 0.01}, 200).delay(0).start();
+            });
+          });
+        }
+      }, this);
 		},
 
 
@@ -73,8 +93,8 @@ define(['./GameObject'], function (GameObjectClass) {
 
 		onMoveComplete: function () {
 			var speed = this._level.getSpeed();
-			this.dispatch('obstacle.move', [this, {y: this._currentHeight}]);
-			if (this._added) {
+			this.dispatch('obstacle.move', [this, {y: this._currentHeight}, this._def]);
+			if (this._added && !this._isCollapsing) {
 				this._currentHeight++;
 				if (this._currentHeight === this._def.length - 2) {
 					this.doRemove();
@@ -131,7 +151,7 @@ define(['./GameObject'], function (GameObjectClass) {
 
 					el.scale.set(this.s, this.s, this.s);
 					el.position.y = this.y;
-					console.log(target.idx);
+					//console.log(target.idx);
 				});
 
 

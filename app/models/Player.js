@@ -8,10 +8,12 @@ define(['./SceneElement'], function (SceneElement) {
 
 		_colors: [0x0ff1c4, 0x00ff00, 0x0000ff],
 		_color:  null,
+    _idx: null,
 
 		position: {},
 
 		init: function (t, idx) {
+      this._idx = idx;
 			this._color = this._colors[idx];
 
 			this.position = {

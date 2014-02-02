@@ -7,15 +7,47 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 	return TowerSubscriberClass.extend({
 
 		_obstacleList: null,
-		playerPos:     null,
+    _playersPositions: null,
+    _players: null,
+
 		_obsIndex:     0,
 
 		onTower: function () {
+      this._playersPositions = [];
+      this._players = [];
+      var self = this;
+      this.on('players.ready', function (players) {
+        players.forEach(function (player) {
+          self._playersPositions[player._idx] = {
+            x: player.position.x,
+            y: player.position.y,
+            z: player.position.z
+          };
+          self._players[player._idx] = player;
+        });
+      });
 			this.on('player.move', function (player, position) {
-				this.playerPos = position;
+				this._playersPositions[player.idx] = position;
 			}, this);
 
-			this.on('obstacle.move', function (obstacle, position) {
+			this.on('obstacle.move', function (obstacle, position, def) {
+        this._playersPositions.forEach(function (playerPosition, idx) {
+          var
+            defRow = position.y * -1,
+            obstacleRow = def[defRow];
+
+          if (obstacleRow && obstacleRow[playerPosition.x][playerPosition.z]) {
+            var player = this._players[idx];
+            this.dispatch('collision', [obstacle, player]);
+          }
+
+        }, this);
+        var getDefRow = function (position, def) {
+          var y = position.y, target = -1*y;
+          if (def[target]) {
+            return def[target];
+          }
+        };
 
 			}, this);
 
