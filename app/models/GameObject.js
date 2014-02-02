@@ -1,8 +1,3 @@
-/**
- * User: vladgoran
- * Date: 30/01/14
- * Time: 03:27
- */
 define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
   return TowerSubscriberClass.extend({
     _el: null,
@@ -17,17 +12,8 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
      */
     buildElement: function () {},
 
-    onTower: function (){
-      this.on('scene.ready', this.onScene, this);
-    },
-
-    onScene: function (scene) {
-      scene.add(this._el);
-    },
-
-    getSceneElement: function () {
+    getElement: function () {
       return this._el;
     }
   });
 });
-

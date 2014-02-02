@@ -28,6 +28,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
     setupRenderLoop: function () {
       var self = this;
       var renderLoop = function () {
+	      TWEEN.update();
         self.dispatch('tick');
         requestAnimationFrame(renderLoop);
       };

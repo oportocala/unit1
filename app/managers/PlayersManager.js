@@ -3,26 +3,27 @@
  * Date: 30/01/14
  * Time: 01:53
  */
-define(['services/tower/Subscriber', './player/Player'], function (TowerSubscriberClass, PlayerClass) {
-  return TowerSubscriberClass.extend({
-    _player: null,
-    init: function (t) {
-      this._super(t);
-    },
+define(['services/tower/Subscriber', 'models/Player'], function (TowerSubscriberClass, PlayerClass) {
+	return TowerSubscriberClass.extend({
+		_players: [],
 
-    onTower: function (t) {
-      this.setupPlayers(t);
-      this.on('scene.ready', this.onScene, this);
-    },
+		init: function (t) {
+			this._super(t);
+		},
+
+		onTower: function (t) {
+			this.setupPlayers(t);
+			this.on('scene.ready', this.onScene, this);
+		},
 
 
-    setupPlayers: function (t) {
+		setupPlayers: function (t) {
+			this._players.push(new PlayerClass(t, this._players.length));
+		},
 
-      this._player = new PlayerClass(t);
-    },
-
-    onScene: function (scene) {
-      scene.add(this._player.getSceneElement());
-    }
-  });
+		onScene: function (scene) {
+			scene.add(this._players[0].getElement());
+			this.dispatch('players.ready', [this._players, scene]);
+		}
+	});
 });

@@ -26,7 +26,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 
           if (newValue !== oldValue) {
             self.pressed[keyType] = newValue;
-            self.dispatch('key.update.' + keyType, [newValue]);
+            self.dispatch('key.update', [keyType, newValue]);
           }
         });
       }, this);
