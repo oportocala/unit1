@@ -48,7 +48,6 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 
 			scene.add(this.getWrapper(10));
 			scene.add(this.getGrids(10));
-
 		},
 
 		getScene: function () {
@@ -57,11 +56,12 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 		},
 
 		getCamera: function () {
-			var width = 20,
+			var
+        width = 20,
 				height = 20;
 
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-			//camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
+			camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
 			camera.position.z = 10;
 			camera.position.x = 10;
 			camera.position.y = 10;
@@ -74,17 +74,18 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 			var axes = new THREE.Object3D();
 			var width = 3;
 			var depth = 3;
-			for(var i = 0; i < height; i ++) {
-				axes.add(this.getLine(new THREE.Vector3( 0, i, 0 ), new THREE.Vector3( width, i, 0 )));
-				axes.add(this.getLine(new THREE.Vector3( width, i, 0 ), new THREE.Vector3( width, i, depth )));
-				axes.add(this.getLine(new THREE.Vector3( width, i, depth ), new THREE.Vector3( 0, i, depth )));
-				axes.add(this.getLine(new THREE.Vector3( 0, i, depth ), new THREE.Vector3( 0, i, 0 )));
+			for(var i = 0; i < 2; i ++) {
+        var h = i * height;
+				axes.add(this.getLine(new THREE.Vector3( 0, h, 0 ), new THREE.Vector3( width, h, 0 )));
+				axes.add(this.getLine(new THREE.Vector3( width, h, 0 ), new THREE.Vector3( width, h, depth )));
+				axes.add(this.getLine(new THREE.Vector3( width, h, depth ), new THREE.Vector3( 0, h, depth )));
+				axes.add(this.getLine(new THREE.Vector3( 0, h, depth ), new THREE.Vector3( 0, h, 0 )));
 			}
 
-			axes.add(this.getLine(new THREE.Vector3( width, 0, 0 ), new THREE.Vector3( width, height-1, 0 )));
-			axes.add(this.getLine(new THREE.Vector3( width, 0, depth ), new THREE.Vector3( width, height-1, depth )));
-			axes.add(this.getLine(new THREE.Vector3( 0, 0, depth ), new THREE.Vector3( 0, height-1, depth )));
-			axes.add(this.getLine(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, height-1, 0 )));
+			axes.add(this.getLine(new THREE.Vector3( width, 0, 0 ), new THREE.Vector3( width, height, 0 )));
+			axes.add(this.getLine(new THREE.Vector3( width, 0, depth ), new THREE.Vector3( width, height, depth )));
+			axes.add(this.getLine(new THREE.Vector3( 0, 0, depth ), new THREE.Vector3( 0, height, depth )));
+			axes.add(this.getLine(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, height, 0 )));
 
 			axes.position.y = - height / 2;
 			axes.position.x = .5 - width / 2;
@@ -103,7 +104,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 				topGrid = this.getGrid(width, depth);
 
 			bottomGrid.position.y = 0;
-			topGrid.position.y = height - 1;
+			topGrid.position.y = height;
 			playerGrid.position.y = height/2;
 
 
@@ -117,15 +118,16 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 			return grids;
 		},
 
-		getGrid: function (width, depth) {
+		getGrid: function (width, depth, color) {
 			var grid = new THREE.Object3D(), i;
+      var color = color || 0xff0000;
 
 
-			grid.add(this.getLine(new THREE.Vector3( 1, 0, 0 ), new THREE.Vector3( 1, 0, depth )));
-			grid.add(this.getLine(new THREE.Vector3( 2, 0, 0 ), new THREE.Vector3( 2, 0, depth )));
+			grid.add(this.getLine(new THREE.Vector3( 1, 0, 0 ), new THREE.Vector3( 1, 0, depth ), color));
+			grid.add(this.getLine(new THREE.Vector3( 2, 0, 0 ), new THREE.Vector3( 2, 0, depth ), color));
 
-			grid.add(this.getLine(new THREE.Vector3( 0, 0, 1 ), new THREE.Vector3( width, 0, 1 )));
-			grid.add(this.getLine(new THREE.Vector3( 0, 0, 2 ), new THREE.Vector3( width, 0, 2 )));
+			grid.add(this.getLine(new THREE.Vector3( 0, 0, 1 ), new THREE.Vector3( width, 0, 1 ), color));
+			grid.add(this.getLine(new THREE.Vector3( 0, 0, 2 ), new THREE.Vector3( width, 0, 2 ), color));
 
 			return grid;
 		},

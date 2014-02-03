@@ -28,17 +28,41 @@ define(['./SceneElement'], function (SceneElement) {
 		buildElement: function () {
 			var mat = new THREE.MeshPhongMaterial({ color: this._color });
 			var el = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), mat);
-			this._tween = new TWEEN.Tween({x:0, y:0, z:0}).easing(TWEEN.Easing.Linear.None).onUpdate(function () {
-				el.position.x = this.x + .5;
-				el.position.y = this.y + .5;
-				el.position.z = this.z + .5;
-			});
+			this._tween = new TWEEN.Tween({x:0, y:0, z:0})
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function () {
+          el.position.x = this.x + .5;
+          el.position.y = this.y + .5;
+          el.position.z = this.z + .5;
+        });
+
+
+      this._spawnAnimationTween = new TWEEN.Tween({s: 0.001})
+        .onUpdate(function () {
+          el.scale.set(this.s, this.s, this.s);
+        })
+        .to({s:1}, 100);
 
 			this.setPosition(this.position, false);
 			return el;
 		},
 
+    onAdded: function () {
+      this._spawnAnimationTween.start();
+      window.PLAYER = this;
+    },
+
 		onTower: function () {
+      this.on('will.collision', function (obstacle, player) {
+          if (player._idx === this._idx) {
+            //this._spawnAnimationTween.to({s:0.0001}, 100).start();
+            console.log('player animation');
+            var pos = this.getPosition();
+            pos.y ++;
+            this.setPosition(pos);
+          }
+      }, this);
+
 			this.on('key.update', function (keySymbol, state) {
 				if (state) {
 					var targetPosition = this.getPosition();
@@ -80,13 +104,14 @@ define(['./SceneElement'], function (SceneElement) {
 				return v >= min && v <= max;
 			};
 
-			return between(position.x, -1, 1) && between(position.y, -1, 1) && between(position.z, -1, 1);
+			return between(position.x, -1, 1)  && between(position.z, -1, 1);
 		},
 
 		setPosition: function (position, withoutTween) {
 			if (withoutTween) {
 				this._tween.to(position, 0).start();
 			} else {
+        console.log('tween to:', position);
 				this._tween.to(position, 100).start();
 				this.position = position;
 			}

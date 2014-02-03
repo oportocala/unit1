@@ -25,30 +25,38 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
           };
           self._players[player._idx] = player;
         });
-      });
+      }, this);
+
 			this.on('player.move', function (player, position) {
-				this._playersPositions[player.idx] = position;
+				this._playersPositions[player._idx] = position;
 			}, this);
+
+      this.on('obstacle.willmove', function (obstacle, position, def) {
+          this._playersPositions.forEach(function (playerPosition, idx) {
+
+            var
+              defRow = position.y * -1 + (playerPosition.y - 1) + 1,
+              obstacleRow = def[defRow];
+
+            if (obstacleRow && obstacleRow[1 + playerPosition.x][1 + playerPosition.z]) {
+              var player = self._players[idx];
+              self.dispatch('will.collision', [obstacle, player]);
+            }
+          });
+       }, this);
 
 			this.on('obstacle.move', function (obstacle, position, def) {
         this._playersPositions.forEach(function (playerPosition, idx) {
+
           var
-            defRow = position.y * -1,
+            defRow = position.y * -1 + (playerPosition.y - 1),
             obstacleRow = def[defRow];
 
-          if (obstacleRow && obstacleRow[playerPosition.x][playerPosition.z]) {
-            var player = this._players[idx];
-            this.dispatch('collision', [obstacle, player]);
+          if (obstacleRow && obstacleRow[1 + playerPosition.x][1 + playerPosition.z]) {
+            var player = self._players[idx];
+            self.dispatch('collision', [obstacle, player]);
           }
-
-        }, this);
-        var getDefRow = function (position, def) {
-          var y = position.y, target = -1*y;
-          if (def[target]) {
-            return def[target];
-          }
-        };
-
+        });
 			}, this);
 
 			this.on('obstacle.removed', function (obstacle) {

@@ -22,7 +22,10 @@ define(['services/tower/Subscriber', 'models/Player'], function (TowerSubscriber
 		},
 
 		onScene: function (scene) {
-			scene.add(this._players[0].getElement());
+      var player = this._players[0];
+			scene.add(player.getElement());
+      player.onAdded(scene);
+
 			this.dispatch('players.ready', [this._players, scene]);
 		}
 	});

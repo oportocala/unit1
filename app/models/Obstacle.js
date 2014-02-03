@@ -25,21 +25,20 @@ define(['./GameObject'], function (GameObjectClass) {
 			this._rows = [];
 
 			this._el = this.buildElement(def);
-      t.on('collision', function (object, player) {
+      t.on('collision.disable', function (object, player) {
         this._tween.stop();
         console.log(this._added);
         if (this._added && !this._isCollapsing) {
           this._isCollapsing = true;
-          console.log(this._rows);
           this._rows.forEach(function (items, idx) {
             if (idx === 0) {
               THEONE = items[0];
+              setTimeout(function (self) {
+                items[0].tween.start();
+              }, 10, this);
             }
             items.forEach(function (el) {
-              if (idx === 0) {
-                //debugger;
-              }
-              el.tween.stop().to({s: 0.01}, 200).delay(0).start();
+              el.tween.delay(0).stop().to({s: 0.01}, 200).start();
             });
           });
         }
@@ -86,6 +85,9 @@ define(['./GameObject'], function (GameObjectClass) {
 				.onUpdate(function () {
 					el.position.y = this.y;
 				})
+        .onStart( function () {
+          self.dispatch('obstacle.willmove', [self, {y: self._currentHeight + 1}, self._def]);
+        })
 				.onComplete(function () {
 					self.onMoveComplete();
 				});
@@ -100,7 +102,6 @@ define(['./GameObject'], function (GameObjectClass) {
 					this.doRemove();
 				}
 				this._tween.delay(speed).start();
-
 			}
 		},
 

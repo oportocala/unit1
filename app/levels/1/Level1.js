@@ -16,7 +16,7 @@ function (LevelClass, ObstacleClass, Obstacle1Def, Obstacle2Def) {
     },
 
     getSpeed: function () {
-      return 500;
+      return 300;
     }
 
   });

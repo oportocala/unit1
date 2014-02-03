@@ -16,7 +16,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
     },
 
     setupCanvas: function() {
-      var renderer = new THREE.WebGLRenderer();
+      var renderer = new THREE.WebGLRenderer( { antialias: true, precision: 'highp' } );
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild( renderer.domElement );
       this._renderer = renderer;

@@ -11,6 +11,11 @@ define(['./GameObject'], function (GameObjectClass) {
 
     onScene: function (scene) {
       scene.add(this._el);
+      this.onAdded(scene);
+    },
+
+    onAdded: function (scene) {
+
     }
 
   });
