@@ -18,11 +18,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
       var self = this;
       this.on('players.ready', function (players) {
         players.forEach(function (player) {
-          self._playersPositions[player._idx] = {
-            x: player.position.x,
-            y: player.position.y,
-            z: player.position.z
-          };
+          self._playersPositions[player._idx] = player.getPosition();
           self._players[player._idx] = player;
         });
       }, this);
@@ -33,14 +29,10 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 
       this.on('obstacle.willmove', function (obstacle, position, def) {
           this._playersPositions.forEach(function (playerPosition, idx) {
-
-            var
-              defRow = position.y * -1 + (playerPosition.y - 1) + 1,
-              obstacleRow = def[defRow];
-
-            if (obstacleRow && obstacleRow[1 + playerPosition.x][1 + playerPosition.z]) {
-              var player = self._players[idx];
-              self.dispatch('will.collision', [obstacle, player]);
+            var isFree = obstacle.isNormalizedFree(playerPosition.x, playerPosition.y-1, playerPosition.z);
+            if (!isFree) {
+	            var player = self._players[idx];
+	            self.dispatch('will.collision', [obstacle, player]);
             }
           });
        }, this);

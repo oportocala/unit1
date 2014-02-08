@@ -6,6 +6,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
       this._super(t);
       this._el = this.buildElement();
     },
+
     onTower: function () {
 
       this.on('obstacles.cleared', function () {
@@ -13,6 +14,7 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 
       }, this);
     },
+
     /**
      * ABSTRACT
      */

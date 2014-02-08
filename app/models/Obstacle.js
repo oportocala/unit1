@@ -11,7 +11,7 @@ define(['./GameObject'], function (GameObjectClass) {
 		_added:            false,
 		_rows:             [],
 		_def:              false,
-		_tween:            false,
+		_hTween:            false,
 		_level:            false,
 		_tower:            false,
 		_idx:              false,
@@ -26,7 +26,7 @@ define(['./GameObject'], function (GameObjectClass) {
 
 			this._el = this.buildElement(def);
       t.on('collision.disable', function (object, player) {
-        this._tween.stop();
+        this._hTween.stop();
         console.log(this._added);
         if (this._added && !this._isCollapsing) {
           this._isCollapsing = true;
@@ -79,8 +79,8 @@ define(['./GameObject'], function (GameObjectClass) {
 				y = this._startHeightLevel - .5,
 				speed = this._level.getSpeed();
 
-			this._tween = new TWEEN.Tween({y: y})
-				.easing(TWEEN.Easing.Linear.None)
+			this._hTween = new TWEEN.Tween({y: y})
+				.easing(TWEEN.Easing.Cubic.InOut)
 				.to({y: '+1'}, speed)
 				.onUpdate(function () {
 					el.position.y = this.y;
@@ -101,7 +101,7 @@ define(['./GameObject'], function (GameObjectClass) {
 				if (this._currentHeight === this._def.length - 2) {
 					this.doRemove();
 				}
-				this._tween.delay(speed).start();
+				this._hTween.delay(speed).start();
 			}
 		},
 
@@ -118,7 +118,7 @@ define(['./GameObject'], function (GameObjectClass) {
 				})
 			});
 
-			this._tween.start();
+			this._hTween.start();
 		},
 
 		doRemove: function () {
@@ -129,7 +129,7 @@ define(['./GameObject'], function (GameObjectClass) {
 			});
 
 			setTimeout(function (self) {
-				self._tween.stop();
+				self._hTween.stop();
 				self._added = false;
 				self.dispatch('obstacle.removed', [self, self._idx]);
 			}, 6000, this);
@@ -162,6 +162,20 @@ define(['./GameObject'], function (GameObjectClass) {
 
 			this._rows[y].push(el);
 			target.add(el);
+		},
+
+		isFree: function (x, y, z) {
+			var def = this._def;
+			if (y ==3 &&  x==2 && z ===1) {
+				debugger;
+			}
+			console.log('checking def[' +y+ ']['+x+']['+ z +']:', (def[y] && def[y][x] && (def[y][x][z] === 1 || def[y][x][z] === 0 ))?def[y][x][z]:false);
+			return !(def[y] && def[y][x] && def[y][x][z]);
+		},
+
+		isNormalizedFree: function (x, y, z) {
+			var ret = this.isFree(x + 1, this._currentHeight * -1 + y + 1, z + 1);
+			return ret;
 		}
 
 	});
