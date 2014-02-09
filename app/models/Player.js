@@ -17,6 +17,8 @@ define(['./SceneElement'], function (SceneElement) {
 
 		_currentObstacle: null,
 
+		_phyEl: null,
+
 		position: {},
 
 		init: function (t, idx) {
