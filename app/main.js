@@ -8,6 +8,13 @@ function (_, TowerClass, GameClass, InputMonitorClass, RendererClass, SceneManag
   var Tower, Game, InputMonitor, Renderer, Scene, PlayersManager, LevelsManager;
 
   var run = function () {
+	/*
+		var MainSpace =  new MainSpaceClass('main');
+		MainSpace.onInit();
+		MainSpace.start();
+		*/
+
+
     Tower = new TowerClass();
     Game = new GameClass(Tower);
     Renderer = new RendererClass(Tower);

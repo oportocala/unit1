@@ -27,8 +27,11 @@ define(['services/tower/Subscriber'], function (TowerSubscriberClass) {
 
     setupRenderLoop: function () {
       var self = this;
+      //var world = new
+	    var world   = new OIMO.World();
       var renderLoop = function () {
-	      TWEEN.update();
+	      world.step();
+	      //TWEEN.update();
         self.dispatch('tick');
         requestAnimationFrame(renderLoop);
       };

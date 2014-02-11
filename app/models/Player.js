@@ -39,8 +39,9 @@ define(['./SceneElement'], function (SceneElement) {
 				mat = new THREE.MeshPhongMaterial({ color: this._color }),
 				el = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), mat);
 
-			this.initTweens(el);
-			this.setPosition(this.position, false);
+			//this.initTweens(el);
+			//this.setPosition(this.position, false);
+			var body = THREEx.Iomo.createBodyFromMesh(world, mesh);
 			return el;
 		},
 
